@@ -1,6 +1,8 @@
+/* eslint-disable no-unused-expressions */
 import {getRequest, postRequest} from "../request";
 import {CLEAR_QUERIES, CLEAR_QUERY, QUERY, REQUEST_FAILED, UPDATE_SNACK, UPDATE_SPIN} from "../constants";
 import SnackType from "../model/SnackType";
+import { requestUrls } from "../constants/requestUrls";
 
 const emptySpin = {
     spinning: false,
@@ -9,15 +11,16 @@ const emptySpin = {
 
 export const getQuery = (getQueryInput) => dispatch =>
     new Promise((resolve, reject) => {
-        let {url, reduxName, requestParams, pathVars, callBackPrepare, spin} = getQueryInput;
+        let {requestName, saveToStore, requestParams, pathVars, callBackPrepare, spin, storeName} = getQueryInput;
+        let url = requestUrls[requestName];
         pathVars ? pathVars.forEach(variable => url = url + "/" + variable) : null;
         spin ? dispatch({type: UPDATE_SPIN, spin: spin}) : null;
         getRequest(url, requestParams)
             .then(res => {
-                reduxName ?
+                saveToStore ?
                     dispatch({
                         type: QUERY,
-                        addition: {[reduxName]: (callBackPrepare ? callBackPrepare(res.data) : res.data)}
+                        addition: {[storeName ? storeName : requestName]: (callBackPrepare ? callBackPrepare(res.data) : res.data)}
                     }) : null;
                 spin ? dispatch({type: UPDATE_SPIN, spin: emptySpin}) : null;
                 resolve(res);
@@ -31,15 +34,16 @@ export const getQuery = (getQueryInput) => dispatch =>
 
 export const postQuery = (postQueryInput) => dispatch =>
     new Promise((resolve, reject) => {
-        let {url, reduxName, data, requestParams, pathVars, callBackPrepare, spin} = postQueryInput;
+        let {requestName, saveToStore, requestParams, pathVars, callBackPrepare, spin, storeName, data} = postQueryInput;
+        let url = requestUrls[requestName];
         pathVars ? pathVars.forEach(variable => url = url + "/" + variable) : null;
         spin ? dispatch({type: UPDATE_SPIN, spin: spin}) : null;
         postRequest(url, data, requestParams)
             .then(res => {
-                reduxName ?
+                saveToStore ?
                     dispatch({
                         type: QUERY,
-                        addition: {[reduxName]: (callBackPrepare ? callBackPrepare(res.data) : res.data)}
+                        addition: {[storeName ? storeName : requestName]: (callBackPrepare ? callBackPrepare(res.data) : res.data)}
                     }) : null;
                 spin ? dispatch({type: UPDATE_SPIN, spin: emptySpin}) : null;
                 resolve(res);

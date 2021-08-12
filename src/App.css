@@ -36,3 +36,19 @@
     transform: rotate(360deg);
   }
 }
+
+.rotate180 {
+  transform: rotateZ(180deg);
+}
+
+.prevNextIcon {
+  font-size: 84px !important;
+  color: dodgerblue;
+  cursor: pointer;
+}
+
+.ulIconGruop{
+  justify-content: space-between;
+  display: flex; 
+  padding: 20px;
+}
