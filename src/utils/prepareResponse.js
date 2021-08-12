@@ -26,5 +26,6 @@ export const prepareForecastList = (data) => {
     dateWeatherInfos.forEach(item => {
         item.avg_temp = (item.avg_temp/item.hourly.length).toFixed(2);
     });
+    console.log(dateWeatherInfos);
     return dateWeatherInfos;
 }

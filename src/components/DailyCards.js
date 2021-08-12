@@ -8,36 +8,21 @@ import { makeStyles } from '@material-ui/core/styles';
 import useWidthSize from '../hooks/useWidthSize';
 import { useState, useEffect } from 'react';
 import QueryInputBuilder from '../model/QueryInput';
-import { requestNames, requestUrls } from '../constants/requestUrls';
+import { requestNames } from '../constants/requestUrls';
 import QueryTypeEnum from '../model/QueryTypeEnum';
 import { APP_ID, FORECAST_COUNT, LOCATION } from '../constants';
 import { prepareForecastList } from '../utils/prepareResponse';
 
-
-const useStyles = makeStyles((theme) => ({
-    root: {
-        flexGrow: 1,
-    },
-    paper: {
-        padding: theme.spacing(2),
-        textAlign: 'center',
-        color: theme.palette.text.secondary,
-    },
-}));
-
 const DailyCards = () => {
     const [numberOfCards, setNumberOfCards] = useState(undefined);
+    const [cardFirstIndex, setCardFirstIndex] = useState(0);
+
     const dispatch = useDispatch();
     const unit = useSelector(state => state.ui.unit, shallowEqual);
     const dateWeatherInfos = useSelector(state => state.query[requestNames.forecast], shallowEqual);
-    const classes = useStyles();
     const widthSize = useWidthSize();
 
     useEffect(() => {
-        let spin = {
-            spinning: true,
-            tip: "Loading"
-        };
         let ftqueryInput = new QueryInputBuilder(requestNames.forecast, QueryTypeEnum.GET)
             .withRequestParams({
                 APPID: APP_ID,
@@ -46,7 +31,7 @@ const DailyCards = () => {
                 units: unit
             })
             .withCallBackPrepare(prepareForecastList)
-            .withSpin(spin)
+            .withSpin()
             .build();
         dispatch(getQuery(ftqueryInput));
     }, []);
@@ -66,18 +51,22 @@ const DailyCards = () => {
 
     }, [widthSize]); // Empty array ensures that effect is only run on mount
 
-
-
-    return <Grid container spacing={0} style={{
-        padding: 10,
-        width: '100%'
-      }}>
-        {dateWeatherInfos && dateWeatherInfos.slice(0, numberOfCards).map(dw =>
-            <Grid style={{padding:10, cursor:"pointer"}} item xs={12} sm={6} md={4} lg={3} xl={2}>
-                <DailyCard weatherInfo={dw}/>
-            </Grid>
-        )}
-    </Grid>
+    return <Fragment>
+        {dateWeatherInfos && <ul className="ulIconGruop" style={cardFirstIndex == 0 ? { justifyContent: "flex-end" } : {}}>
+            {cardFirstIndex != 0 && <Forward className="rotate180 prevNextIcon" onClick={() => setCardFirstIndex(cardFirstIndex - 1)} />}
+            {cardFirstIndex + numberOfCards < dateWeatherInfos.length && <Forward className="prevNextIcon" onClick={() => setCardFirstIndex(cardFirstIndex + 1)} />}
+        </ul>}
+        <Grid container spacing={0} style={{
+            padding: 10,
+            width: '100%'
+        }}>
+            {dateWeatherInfos && dateWeatherInfos.slice(cardFirstIndex, cardFirstIndex + numberOfCards).map(dw =>
+                <Grid style={{ padding: 10 }} item xs={12} sm={6} md={4} lg={3} xl={2}>
+                    <DailyCard weatherInfo={dw} />
+                </Grid>
+            )}
+        </Grid>
+    </Fragment>
 }
 
 export default DailyCards;

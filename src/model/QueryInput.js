@@ -48,8 +48,8 @@ export default class QueryInputBuilder {
         return this;
     }
 
-    withSpin(spin) {
-        this.spin = spin;
+    withSpin() {
+        this.spin = true;
         return this;
     }
 

@@ -6,6 +6,7 @@ export const UPDATE_SPIN = "UPDATE_SPIN";
 export const UPDATE_SNACK = "UPDATE_SNACK";
 export const SET_UNIT = "SET_UNIT";
 export const SET_DATE = "SET_DATE";
+export const SET_CARD_FIRST_INDEX = "SET_CARD_FIRST_INDEX";
 export const REQUEST_FAILED = "Request failed";
 
 

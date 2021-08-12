@@ -4,11 +4,6 @@ import {CLEAR_QUERIES, CLEAR_QUERY, QUERY, REQUEST_FAILED, UPDATE_SNACK, UPDATE_
 import SnackType from "../model/SnackType";
 import { requestUrls } from "../constants/requestUrls";
 
-const emptySpin = {
-    spinning: false,
-    tip: null
-};
-
 export const getQuery = (getQueryInput) => dispatch =>
     new Promise((resolve, reject) => {
         let {requestName, saveToStore, requestParams, pathVars, callBackPrepare, spin, storeName} = getQueryInput;
@@ -22,12 +17,12 @@ export const getQuery = (getQueryInput) => dispatch =>
                         type: QUERY,
                         addition: {[storeName ? storeName : requestName]: (callBackPrepare ? callBackPrepare(res.data) : res.data)}
                     }) : null;
-                spin ? dispatch({type: UPDATE_SPIN, spin: emptySpin}) : null;
+                spin ? dispatch({type: UPDATE_SPIN, spin: false}) : null;
                 resolve(res);
             })
             .catch(err => {
                 notifyError(err);
-                spin ? dispatch({type: UPDATE_SPIN, spin: emptySpin}) : null;
+                spin ? dispatch({type: UPDATE_SPIN, spin: false}) : null;
                 reject(err);
             })
     });
@@ -45,12 +40,12 @@ export const postQuery = (postQueryInput) => dispatch =>
                         type: QUERY,
                         addition: {[storeName ? storeName : requestName]: (callBackPrepare ? callBackPrepare(res.data) : res.data)}
                     }) : null;
-                spin ? dispatch({type: UPDATE_SPIN, spin: emptySpin}) : null;
+                spin ? dispatch({type: UPDATE_SPIN, spin: false}) : null;
                 resolve(res);
             })
             .catch(err => {
                 notifyError(err);
-                spin ? dispatch({type: UPDATE_SPIN, spin: emptySpin}) : null;
+                spin ? dispatch({type: UPDATE_SPIN, spin: false}) : null;
                 reject(err);
             })
     });
